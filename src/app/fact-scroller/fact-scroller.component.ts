@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Fact } from '../_model/fact.model';
 import { FactService } from '../_service/fact.service';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, Subscribable } from 'rxjs';
 
 
 @Component({
@@ -15,6 +15,7 @@ export class FactScrollerComponent {
   dataSource: FactsDataSource;
 
   constructor(private factService: FactService) {
+    // tslint:disable-next-line: no-use-before-declare
     this.dataSource = new FactsDataSource(factService);
   }
 
@@ -28,6 +29,7 @@ export class FactsDataSource extends DataSource<Fact | undefined> {
   private pageSize = 10;
   private lastPage = 0;
 
+  private isRequest;
   constructor(private factService: FactService) {
     super();
 
@@ -37,7 +39,6 @@ export class FactsDataSource extends DataSource<Fact | undefined> {
 
   connect(collectionViewer: CollectionViewer): Observable<(Fact | undefined)[] | ReadonlyArray<Fact | undefined>> {
     this.subscription.add(collectionViewer.viewChange.subscribe(range => {
-
       const currentPage = this._getPageForIndex(range.end);
 
       if (currentPage && range) {
@@ -57,12 +58,14 @@ export class FactsDataSource extends DataSource<Fact | undefined> {
   }
 
   private _fetchFactPage(): void {
-    for (let i = 0; i < this.pageSize; ++i) {
-      this.factService.getRandomFact().subscribe(res => {
-        this.cachedFacts = this.cachedFacts.concat(res);
-        this.dataStream.next(this.cachedFacts);
-      });
+    if (this.isRequest) {
+      this.isRequest.unsubscribe();
     }
+
+    this.isRequest = this.factService.getRandomFact(this.lastPage).subscribe(res => {
+      this.cachedFacts = [...this.cachedFacts, ...res];
+      this.dataStream.next(this.cachedFacts);
+    });
   }
 
   private _getPageForIndex(i: number): number {

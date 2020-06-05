@@ -1,4 +1,4 @@
 export interface Fact {
-  text?: string;
-  date?: string;
+  id?: string;
+  name?: string;
 }
