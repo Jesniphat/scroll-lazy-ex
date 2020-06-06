@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/infinite-scroller",
+            "outputPath": "dist/infinite-scroller/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -117,8 +117,59 @@
               "devServerTarget": "infinite-scroller:serve:production"
             }
           }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/infinite-scroller/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": true
+            }
+          }
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "options": {
+            "browserTarget": "infinite-scroller:build",
+            "serverTarget": "infinite-scroller:server"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "infinite-scroller:build:production",
+              "serverTarget": "infinite-scroller:server:production"
+            }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "infinite-scroller:build:production",
+            "serverTarget": "infinite-scroller:server:production",
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {}
+          }
         }
       }
-    }},
-  "defaultProject": "infinite-scroller"
+    }
+  },
+  "defaultProject": "infinite-scroller",
+  "cli": {
+    "analytics": "e6978137-4097-4b1e-884c-d484821519ac"
+  }
 }

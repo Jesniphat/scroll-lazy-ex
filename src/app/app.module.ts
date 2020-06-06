@@ -17,7 +17,7 @@ import { NgxScrollerComponent } from './ngx-scroller/ngx-scroller.component';
       NgxScrollerComponent
    ],
    imports: [
-      BrowserModule,
+      BrowserModule.withServerTransition({ appId: 'serverApp' }),
       HttpClientModule,
       ScrollingModule,
       InfiniteScrollModule

@@ -16,7 +16,7 @@ export class NgxScrollerComponent implements OnInit {
     this.facthValue();
   }
 
-  public onScroll(ev: any) {
+  public onScroll() {
     this.page += 1;
     this.facthValue();
   }
