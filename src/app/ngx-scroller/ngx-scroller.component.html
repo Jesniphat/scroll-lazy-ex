@@ -1,0 +1,21 @@
+<div class="main-scroll">
+  <div
+    infiniteScroll
+    [infiniteScrollDistance]="1"
+    [infiniteScrollThrottle]="50"
+    [infiniteScrollContainer]="'.main-scroll'"
+    [fromRoot]="true"
+    (scrolled)="onScroll()"
+  >
+  <li *ngFor="let fact of dataList">
+
+    <div *ngIf="fact" class="fact-item">
+      <div class="fact-date">{{ fact.id }}</div>
+      <div class="fact-text">{{ fact.name }}</div>
+    </div>
+    <div *ngIf="!fact">
+      Loading ...
+    </div>
+  </li>
+</div>
+</div>
